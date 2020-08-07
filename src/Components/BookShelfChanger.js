@@ -27,7 +27,7 @@ export default function BookShelfChanger(props) {
         const book = await get(id)
         console.log(book)
         await update(book, shelf)
-        if (document.location.href !== "/search") {syncData()}
+        if (document.location.href !== "http://localhost:3000/search") {syncData()}
         else {document.location.href='/'}
     }
     

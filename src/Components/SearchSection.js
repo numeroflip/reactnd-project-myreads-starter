@@ -3,6 +3,8 @@ import FormInput from './FormInput'
 import Section from './Section'
 import Label from './Label'
 import { search } from '../BooksAPI'
+import { Link } from 'react-router-dom'
+import Icon from './Icon'
 
 
 export default class SearchSection extends Component {
@@ -38,23 +40,30 @@ export default class SearchSection extends Component {
 
     render() {
         return (
-
-            <form className="search-books">
-                <Label for='search'>
-                Search:
-                </Label>
-                <FormInput 
-                    name="search"
-                    type="text" 
-                    value={this.state.query}
-                    onChange={(e) => this.handleChange(e)}
-                />
+            <div>
+                <form className="search-books" style={{
+                display: 'flex',
+                alignItems: 'center',
+            }} >
+                    <Link to='/'>
+                        <Icon border padding='15px' iconName='arrow-left2'></Icon>
+                    </Link>
+                    <Label htmlFor='search'>
+                    Search:
+                    </Label>
+                    <FormInput 
+                        name="search"
+                        type="text" 
+                        value={this.state.query}
+                        onChange={(e) => this.handleChange(e)}
+                    />
+            </form>
                 <Section 
                     getDataFromObj={this.getDataFromObj} 
                     category="" 
                     books={(this.formattedBooks(this.state.books))}
                 />
-            </form>
+        </div>
         )
     }
 }
