@@ -27,7 +27,7 @@ export default function Book(props) {
                     <BookShelfChanger syncData={syncData} id={id} />
                 </BookTop>
                 <BookTitle>{title}</BookTitle>
-                <BookAuthor>{author}</BookAuthor>
+                <BookAuthor>- {author}</BookAuthor>
             </BookItem>
     )
 }

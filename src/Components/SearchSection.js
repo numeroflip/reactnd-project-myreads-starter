@@ -45,7 +45,6 @@ export default class SearchSection extends Component {
         align-items: center;
         justify-content: center;
         position: relative;
-        padding: 0 35px 0 0;
         max-width: 600px;
 
         > a {

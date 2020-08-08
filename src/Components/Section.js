@@ -39,6 +39,7 @@ export default function Section(props) {
             padding: 0 20px 40px;
         }
     `
+
     return (
 
         <Bookshelf>

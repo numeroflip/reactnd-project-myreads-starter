@@ -32,6 +32,14 @@ const App = styled.div`
   > * {
     padding: 0 2rem;
   }
+
+
+  @media(max-width: 1200px) {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
 `
 
 
@@ -131,7 +139,7 @@ class BooksApp extends React.Component {
                 getData={this.getDatafromObj}  
               />
                 <Link to='./search'>
-                  <Icon style={{marginBottom: '6rem'}} border padding="15px" iconName="plus" />
+                  <Icon style={{marginBottom: '6rem'}} border padding="20px" iconName="plus" />
                 </Link> 
             </div>
           )} 

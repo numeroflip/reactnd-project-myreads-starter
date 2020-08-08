@@ -7,9 +7,12 @@ export default styled.input`
     justify-content: center;
     background-color: #fff;
     padding: .5rem 1rem;
+    padding-left: 1.5rem;
     box-shadow: 0px 2px 15px -5px black;
     border: 4px solid black;
     border-radius: 6px;
     font-size: inherit;
     font-family: var(--font-header);
+    border-radius: 50px;
+
 `
