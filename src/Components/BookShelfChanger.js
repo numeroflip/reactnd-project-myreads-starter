@@ -1,26 +1,29 @@
 import React from 'react'
 import Icon from './Icon'
+import styled from 'styled-components'
 import { get, update } from '../BooksAPI'
 export default function BookShelfChanger(props) {
     const {id, syncData} = props;
 
-    const selectStyle = {
-        position: 'absolute',
-        top: '0',
-        left: '-5px',
-        width: "100%",
-        height: "100%",
-        opacity: "0",
-        cursor: "pointer",
-    }
 
-    const changerStyle = {
-        position: 'absolute',
-        right: '0',
-        bottom: '-10px',
-        width: '40px',
-        height: '40px'
-    }
+    const Changer = styled.div`
+        position: absolute;
+        right: -10px;
+        bottom: -10px;
+        width: 40px;
+        height: 40px;
+        
+        `
+    const Select = styled.select`
+        position: absolute;
+        top: 0;
+        left: 5px;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    `
+    
     
     const moveBookTo = async (id, shelf) => {
         console.log(id)
@@ -33,19 +36,19 @@ export default function BookShelfChanger(props) {
     
 
     return(
-        <div className="book-shelf-changer" style={changerStyle}>
+        <Changer>
             <Icon 
                 iconName="circle-down"
                 padding='0'
                 size='2.4rem'
             />
-            <select style={selectStyle}>
+            <Select>
                 <option value="move" disabled>Move to...</option>
                 <option onClick={() => moveBookTo(id, "currentlyReading")} value="currentlyReading">Currently Reading</option>
                 <option onClick={() => moveBookTo(id, "wantToRead")} value="wantToRead">Want to Read</option>
                 <option onClick={() => moveBookTo(id, "read")} value="read">Read</option>
                 <option onClick={() => moveBookTo(id, "none")} value="none">None</option>
-            </select>
-        </div>
+            </Select>
+        </Changer>
     )
 }

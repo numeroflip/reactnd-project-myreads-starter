@@ -1,11 +1,7 @@
 import styled from 'styled-components'
 
 export default styled.div`
-    color: red
+    color: red;
+    font-size: 0.8em;
+    margin-top: 10px;
 `
-
-/* export default function BookTitle(props) {
-    return(
-        <div className="book-title">{props.title}</div>
-    )
-} */

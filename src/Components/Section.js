@@ -1,6 +1,7 @@
 import React from 'react'
-import SectionTitle from './SectionTitle'
+import Title from './Title'
 import Books from './Books'
+import styled from 'styled-components'
 export default function Section(props) {
 
 
@@ -28,17 +29,22 @@ export default function Section(props) {
         }
     }
 
+
     const { category, books } = props;
+
+    const Bookshelf = styled.div`
+        padding: 0 10px 20px;
+
+        @media (min-width: 600px) {
+            padding: 0 20px 40px;
+        }
+    `
     return (
 
-        <div className="bookshelf">
-            <SectionTitle title={ camelToNormal(category) } style={{marginBottom: '10rem'}}/>
-            <div className="bookshelf-books">
-                <ol className="books-grid">
-                    <Books syncData={props.syncData} books={books} />
-                </ol>
-            </div>
-        </div>
+        <Bookshelf>
+            <Title>{camelToNormal(category)}</Title>
+            <Books syncData={props.syncData} books={books} />
+        </Bookshelf>
     )
 }
 

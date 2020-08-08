@@ -1,9 +1,15 @@
 import styled from 'styled-components'
 
 export default styled.input`
-    border: none;
-    background: transparent;
-
-    font-size: 3rem;
-    font-family: var(--font-header)
+    width: 100%;
+    height: 68px; /* back arrow icon's size */
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    padding: .5rem 1rem;
+    box-shadow: 0px 2px 15px -5px black;
+    border: 4px solid black;
+    border-radius: 6px;
+    font-size: inherit;
+    font-family: var(--font-header);
 `

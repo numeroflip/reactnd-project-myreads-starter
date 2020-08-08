@@ -1,15 +1,16 @@
 import React from 'react'
+import {Route, Link} from 'react-router-dom'
+import * as BooksAPI from './BooksAPI'
+
+import styled from 'styled-components'
+import bgImg from './img/blizzard.png'
+
+// ============ Components ==================
 import Header from './Components/Header'
 import Sections from './Components/Sections'
 import Footer from './Components/Footer'
-import {Route, Link} from 'react-router-dom'
 import SearchSection from './Components/SearchSection'
 import Icon from './Components/Icon'
-import styled from 'styled-components'
-import bgImg from './img/blizzard.png'
-import {getAll, update} from './BooksAPI'
-
-import './App.css'
 
 
 // =========== CSS STYLES ================
@@ -26,6 +27,7 @@ const App = styled.div`
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  justify-items: stretch;
 
   > * {
     padding: 0 2rem;
@@ -33,10 +35,9 @@ const App = styled.div`
 `
 
 
-
+/*  The whole app */
 class BooksApp extends React.Component {
 
-  categories = ['Currently Reading', 'Want to Read', 'Read']
   state = {shelves: []}
 
   containsKeyValue = (array, key, value) => {
@@ -47,6 +48,11 @@ class BooksApp extends React.Component {
     return ans;
   }
 
+/**
+ *    Filters the used data from API response.
+ *    Handle cases when no image or author is provided. 
+ *    @param {Object} bookObj - a book object coming from the API descibing a single book
+ */ 
   getDatafromObj = (bookObj) => {
     return {
       title: bookObj.title,
@@ -57,21 +63,23 @@ class BooksApp extends React.Component {
               : 'https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg' 
     }
   }
-
+  
+  // move a book through the API
   moveBookTo = (bookID, shelf) => {
-    update(bookID, shelf)
+    BooksAPI.update(bookID, shelf)
   }
-
+  //get shelves data from API
   syncData = async () => {
     let shelves = []
 
-    const allData = await getAll()
+    const allData = await BooksAPI.getAll()
 
     allData.map(data => {
 
         const filteredData = this.getDatafromObj(data)
         const shelf = data.shelf
         const isNewShelf = !this.containsKeyValue(shelves, 'name', shelf)
+
         let index;
         if( isNewShelf) { index = shelves.length}
         else {shelves.map((currShelf, i) => {
@@ -89,6 +97,21 @@ class BooksApp extends React.Component {
     this.setState({shelves: shelves})
 
   }
+  updateUIFromAPI = () => {
+
+  }
+
+  moveInUI = (book, shelf) => {
+    // Get current shelf
+    // Remove from that self in state
+    // Move to the shelf
+
+  }
+
+  moveInAPI = (id, shelf) => {
+    BooksAPI.update(id, shelf)
+  }
+
 
   componentDidMount() {
     this.syncData()    
@@ -114,7 +137,7 @@ class BooksApp extends React.Component {
           )} 
           />
           <Route exact path='/search' render={() => (
-            <SearchSection getDataFromObj={this.getDatafromObj} />
+            <SearchSection style={{justifySelf: 'center'}} getDataFromObj={this.getDatafromObj} />
           )} 
           />
         <Footer>Site made by Aron Berenyi</Footer>
