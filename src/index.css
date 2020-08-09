@@ -12,6 +12,13 @@ html, body, .root {
   margin: 0;
 }
 
+a {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  height: auto;
+}
+
 body {
   line-height: 1.5;
   

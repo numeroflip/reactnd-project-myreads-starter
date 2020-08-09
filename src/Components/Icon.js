@@ -3,22 +3,24 @@ import styled, {css} from 'styled-components'
 import sprite from '../sprite.svg'
 
 const IconWrapper = styled.div`
-    display: inline-block;
+    display: block;
     background: var(--gradient-main);
-    border-radius: 100%;
+    border-radius: 320px;
     padding: ${({padding}) => padding || '11px'};
     box-shadow: var(--box-shadow);
     transition: all .2s;
+    cursor: pointer;
+    width: auto;
 
     &:hover {
         transform: scale(1.05);
     }
 
 
-    ${({border}) => border && css`
+    ${ ({border}) => border && css`
         border: 4px solid black
     `
-    }
+}
 `
 
 const Svg = styled.svg`

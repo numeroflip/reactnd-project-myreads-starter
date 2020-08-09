@@ -10,9 +10,14 @@ export default styled.input`
     padding-left: 1.5rem;
     box-shadow: 0px 2px 15px -5px black;
     border: 4px solid black;
-    border-radius: 6px;
+    border-radius: 50%;
     font-size: inherit;
     font-family: var(--font-header);
     border-radius: 50px;
+
+    &:focus {
+        outline: none;
+        background-color: rgba(19,208,117,0.07);
+    }
 
 `

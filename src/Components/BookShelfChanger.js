@@ -7,10 +7,8 @@ import * as BookAPI from '../BooksAPI'
     const Changer = styled.div`
         position: absolute;
         right: -10px;
-        bottom: -10px;
-        width: 40px;
-        height: 40px;
-        
+        bottom: -10px;   
+        min-height: 45px;     
         `
     const Select = styled.select`
         position: absolute;
@@ -39,7 +37,7 @@ export default function BookShelfChanger(props) {
             <Icon 
                 iconName="circle-down"
                 padding='0'
-                size='2.4rem'
+                size='40px'
             />
             <Select value={props.data.shelf} onChange={(e) => handleChange(e, props.data)}>
                 <option  value="move" disabled>Move to...</option>

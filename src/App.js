@@ -197,7 +197,9 @@ class BooksApp extends React.Component {
             <SearchSection style={{justifySelf: 'center'}} handleShelfChange={this.handleShelfChange} getDataFromObj={this.getDatafromObj} />
           )} 
           />
-        <Footer>Site made by Aron Berenyi</Footer>
+        <Footer>
+          <p>Site made by Aron Berenyi</p>
+        </Footer>
       </App>    
 
 
