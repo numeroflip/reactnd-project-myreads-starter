@@ -19,18 +19,27 @@ export default class SearchSection extends Component {
         return true;
     }
 
-    handleChange = async (e) => {
-        await this.syncStateAndInput(e)
-        const query = await search(this.state.query)
-        this.setState({books: query});
-    }
-
-    formattedBooks = (books) => {
+    formatBooks = (books) => {
         return  Array.isArray(books) 
             ?   books.map(book => this.getDataFromObj(book))
             :   []
         
     } 
+    
+    handleChange = async (e) => {
+        await this.syncStateAndInput(e)
+        let query = await search(this.state.query)
+        query = this.formatBooks(query)
+        
+        const newBooks = query.map(book => {
+            book.shelf = this.props.bookOnWhichShelf(book.id)
+            return book
+        } 
+        )
+        this.setState({books: newBooks});
+        
+        
+    }
 
     getDataFromObj = this.props.getDataFromObj
 
@@ -79,7 +88,7 @@ export default class SearchSection extends Component {
                         handleShelfChange={this.props.handleShelfChange}
                         getDataFromObj={this.getDataFromObj} 
                         category="Results" 
-                        books={(this.formattedBooks(this.state.books))}
+                        books={this.state.books}
                     />
             </div>
         )

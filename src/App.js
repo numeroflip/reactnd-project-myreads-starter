@@ -71,10 +71,24 @@ class BooksApp extends React.Component {
               : 'https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg' 
     }
   }
+
   
-
   // ================HELPER FUNCTIONS=================
-
+  bookOnWhichShelf = (id) => {
+    const shelves = this.state.shelves;
+    let shelf = shelves.filter(shelf => 
+      Boolean(
+        shelf.books
+        .filter(book => book.id === id)[0])
+        )[0]
+    shelf && (shelf = shelf.name)
+    console.log(shelf)
+    return shelf 
+          ? shelf
+          : 'none'
+  }
+  
+  
   moveInUI = (book, shelf) => {
     shelf === 'none' && (shelf = null)
     const currentShelf = this.findCurrentShelf(book)  //the self in the state
@@ -129,13 +143,11 @@ class BooksApp extends React.Component {
 // ==========MAIN FUNCTIONS=====================================
 
   handleShelfChange = async (book, shelf) => {
-    console.log(this)
     if (shelf === 'none') {
 
     }
     this.moveInUI(book, shelf)
-    // const bookObj = await BooksAPI.get(book.id)
-    // BooksAPI.update(bookObj, shelf)
+
   }
   
 
@@ -194,7 +206,7 @@ class BooksApp extends React.Component {
           )} 
           />
           <Route exact path='/search' render={() => (
-            <SearchSection style={{justifySelf: 'center'}} handleShelfChange={this.handleShelfChange} getDataFromObj={this.getDatafromObj} />
+            <SearchSection bookOnWhichShelf={this.bookOnWhichShelf} style={{justifySelf: 'center'}} handleShelfChange={this.handleShelfChange} getDataFromObj={this.getDatafromObj} />
           )} 
           />
         <Footer>
