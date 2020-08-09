@@ -1,9 +1,7 @@
 import React from 'react'
 import Icon from './Icon'
 import styled from 'styled-components'
-import { get, update } from '../BooksAPI'
-export default function BookShelfChanger(props) {
-    const {id, syncData} = props;
+import * as BookAPI from '../BooksAPI'
 
 
     const Changer = styled.div`
@@ -23,17 +21,18 @@ export default function BookShelfChanger(props) {
         opacity: 0;
         cursor: pointer;
     `
-    
-    
-    const moveBookTo = async (id, shelf) => {
-        console.log(id)
-        const book = await get(id)
-        console.log(book)
-        await update(book, shelf)
-        if (document.location.href !== "http://localhost:3000/search") {syncData()}
-        else {document.location.href='/'}
+
+
+export default function BookShelfChanger(props) {
+
+    const handleChange = async (e, book) => {
+        const shelf = e.target.value;
+        props.handleShelfChange(book, shelf)
+
+        const bookObj = await BookAPI.get(book.id)
+        BookAPI.update(bookObj, shelf)
+        
     }
-    
 
     return(
         <Changer>
@@ -42,13 +41,14 @@ export default function BookShelfChanger(props) {
                 padding='0'
                 size='2.4rem'
             />
-            <Select>
-                <option value="move" disabled>Move to...</option>
-                <option onClick={() => moveBookTo(id, "currentlyReading")} value="currentlyReading">Currently Reading</option>
-                <option onClick={() => moveBookTo(id, "wantToRead")} value="wantToRead">Want to Read</option>
-                <option onClick={() => moveBookTo(id, "read")} value="read">Read</option>
-                <option onClick={() => moveBookTo(id, "none")} value="none">None</option>
+            <Select value={props.data.shelf} onChange={(e) => handleChange(e, props.data)}>
+                <option  value="move" disabled>Move to...</option>
+                <option  value="currentlyReading">Currently Reading</option>
+                <option  value="wantToRead">Want to Read</option>
+                <option  value="read">Read</option>
+                <option  value="none">None</option>
             </Select>
         </Changer>
     )
+    
 }

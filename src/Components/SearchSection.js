@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import FormInput from './FormInput'
 import Section from './Section'
-import Label from './Label'
 import styled from 'styled-components'
 import { search } from '../BooksAPI'
 import { Link } from 'react-router-dom'
@@ -23,7 +22,6 @@ export default class SearchSection extends Component {
     handleChange = async (e) => {
         await this.syncStateAndInput(e)
         const query = await search(this.state.query)
-        console.log(query);
         this.setState({books: query});
     }
 
@@ -59,15 +57,6 @@ export default class SearchSection extends Component {
             font-size: 1.7rem;
         }
 
-
-
-            /* > a {
-                margin: 0;
-                margin-top: 2rem;
-                position: relative;
-                display: block;
-            } */
-
     `
 
     render() {
@@ -87,6 +76,7 @@ export default class SearchSection extends Component {
                     />
                 </Form>
                     <Section 
+                        handleShelfChange={this.props.handleShelfChange}
                         getDataFromObj={this.getDataFromObj} 
                         category="Results" 
                         books={(this.formattedBooks(this.state.books))}

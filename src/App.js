@@ -1,7 +1,6 @@
 import React from 'react'
 import {Route, Link} from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-
 import styled from 'styled-components'
 import bgImg from './img/blizzard.png'
 
@@ -50,7 +49,7 @@ class BooksApp extends React.Component {
 
   containsKeyValue = (array, key, value) => {
     let ans = false;
-    array.map(obj => {
+    array.forEach(obj => {
       if(obj[key] === value) {ans = true}
     })
     return ans;
@@ -66,23 +65,88 @@ class BooksApp extends React.Component {
       title: bookObj.title,
       author: bookObj.authors ? bookObj.authors[0] : 'Unknown',
       id: bookObj.id,
+      shelf: bookObj.shelf || 'none',
       imgURL: bookObj.imageLinks 
               ? bookObj.imageLinks.thumbnail
               : 'https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg' 
     }
   }
   
-  // move a book through the API
-  moveBookTo = (bookID, shelf) => {
-    BooksAPI.update(bookID, shelf)
+
+  // ================HELPER FUNCTIONS=================
+
+  moveInUI = (book, shelf) => {
+    shelf === 'none' && (shelf = null)
+    const currentShelf = this.findCurrentShelf(book)  //the self in the state
+    currentShelf
+      ? this.moveBookTo(book, shelf, currentShelf)
+      : this.addBookToShelf(book, shelf)
+
   }
-  //get shelves data from API
+
+  findCurrentShelf = (book) => {
+    const state = this.state
+    const currentShelf = state.shelves.filter(shelf => shelf.books.includes(book))[0]
+    return currentShelf 
+            ? currentShelf.name
+            : null
+  }
+
+  moveBookTo = (book, shelf, currentShelf) => {
+      this.removeBookFromShelf(book, currentShelf)
+      shelf !== null && this.addBookToShelf(book, shelf)
+  }
+
+  removeBookFromShelf = (book, shelf) => {
+    let state = this.state
+    const shelfIndex = this.indexOfShelf(shelf)
+    const books = state.shelves[shelfIndex].books
+    const bookIndex = books.indexOf(book)
+    let newBooks = books
+    books.splice(bookIndex, 1)
+    state.shelves[shelfIndex].books = newBooks;
+    this.setState({state})
+  }
+
+  
+  addBookToShelf = (book, shelf) => {
+    
+    let state = this.state;
+    book.shelf = shelf;
+    const index = this.indexOfShelf(shelf)
+    state.shelves[index].books.push(book)
+    this.setState({state});
+  }
+
+  indexOfShelf = (shelf) => {
+    const shelves = this.state.shelves;
+    const thisSelf = shelves.filter(currShelf => currShelf.name === shelf)[0];
+    const index = shelves.indexOf(thisSelf)
+    return index
+  }
+
+
+// ==========MAIN FUNCTIONS=====================================
+
+  handleShelfChange = async (book, shelf) => {
+    console.log(this)
+    if (shelf === 'none') {
+
+    }
+    this.moveInUI(book, shelf)
+    // const bookObj = await BooksAPI.get(book.id)
+    // BooksAPI.update(bookObj, shelf)
+  }
+  
+
+
+   //get shelves data from API at start
   syncData = async () => {
     let shelves = []
 
     const allData = await BooksAPI.getAll()
 
-    allData.map(data => {
+    allData.forEach(data => {
 
         const filteredData = this.getDatafromObj(data)
         const shelf = data.shelf
@@ -90,7 +154,7 @@ class BooksApp extends React.Component {
 
         let index;
         if( isNewShelf) { index = shelves.length}
-        else {shelves.map((currShelf, i) => {
+        else {shelves.forEach((currShelf, i) => {
           if(currShelf.name === shelf) {index = i}
         })} 
         if (isNewShelf) {
@@ -103,24 +167,9 @@ class BooksApp extends React.Component {
         }
     })
     this.setState({shelves: shelves})
-
   }
-  updateUIFromAPI = () => {
-
-  }
-
-  moveInUI = (book, shelf) => {
-    // Get current shelf
-    // Remove from that self in state
-    // Move to the shelf
-
-  }
-
-  moveInAPI = (id, shelf) => {
-    BooksAPI.update(id, shelf)
-  }
-
-
+  
+  
   componentDidMount() {
     this.syncData()    
    } 
@@ -133,7 +182,7 @@ class BooksApp extends React.Component {
           <Route exact path='/' render={() => (
             <div>
               <Sections 
-                syncData={this.syncData}
+                handleShelfChange={this.handleShelfChange}
                 clName="list-books" 
                 data={this.state}
                 getData={this.getDatafromObj}  
@@ -145,7 +194,7 @@ class BooksApp extends React.Component {
           )} 
           />
           <Route exact path='/search' render={() => (
-            <SearchSection style={{justifySelf: 'center'}} getDataFromObj={this.getDatafromObj} />
+            <SearchSection style={{justifySelf: 'center'}} handleShelfChange={this.handleShelfChange} getDataFromObj={this.getDatafromObj} />
           )} 
           />
         <Footer>Site made by Aron Berenyi</Footer>

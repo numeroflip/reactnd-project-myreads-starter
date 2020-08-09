@@ -19,15 +19,15 @@ const BookItem = styled.li`
 `
 
 export default function Book(props) {
-    const { title , imgURL, author, id, syncData } = props
+    const { data } = props
     return(             
             <BookItem>
                 <BookTop>
-                    <BookImg imgURL={imgURL}/>                        
-                    <BookShelfChanger syncData={syncData} id={id} />
+                    <BookImg imgURL={data.imgURL}/>                        
+                    <BookShelfChanger handleShelfChange={props.handleShelfChange} data={data} />
                 </BookTop>
-                <BookTitle>{title}</BookTitle>
-                <BookAuthor>- {author}</BookAuthor>
+                <BookTitle>{data.title}</BookTitle>
+                <BookAuthor>- {data.author}</BookAuthor>
             </BookItem>
     )
 }

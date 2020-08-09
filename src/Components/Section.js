@@ -2,6 +2,16 @@ import React from 'react'
 import Title from './Title'
 import Books from './Books'
 import styled from 'styled-components'
+
+const Bookshelf = styled.div`
+padding: 0 10px 20px;
+
+@media (min-width: 600px) {
+    padding: 0 20px 40px;
+}
+`
+
+
 export default function Section(props) {
 
 
@@ -32,19 +42,11 @@ export default function Section(props) {
 
     const { category, books } = props;
 
-    const Bookshelf = styled.div`
-        padding: 0 10px 20px;
-
-        @media (min-width: 600px) {
-            padding: 0 20px 40px;
-        }
-    `
-
     return (
 
         <Bookshelf>
             <Title>{camelToNormal(category)}</Title>
-            <Books syncData={props.syncData} books={books} />
+            <Books handleShelfChange={props.handleShelfChange} books={books} />
         </Bookshelf>
     )
 }

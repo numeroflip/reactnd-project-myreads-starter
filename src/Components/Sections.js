@@ -9,7 +9,7 @@ export default function Sections(props) {
         <div className={props.clName && props.clName} >
 
             {shelves.map((shelf, i) => (
-                <Section syncData={props.syncData} category={shelf.name} books={shelf.books} key={9999-i} />
+                <Section handleShelfChange={props.handleShelfChange} category={shelf.name} books={shelf.books} key={9999-i} />
             ))}
             
         </div>

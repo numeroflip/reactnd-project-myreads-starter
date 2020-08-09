@@ -17,7 +17,8 @@ const IconWrapper = styled.div`
 
     ${({border}) => border && css`
         border: 4px solid black
-    `}
+    `
+    }
 `
 
 const Svg = styled.svg`

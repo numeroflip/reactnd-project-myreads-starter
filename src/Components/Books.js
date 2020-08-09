@@ -12,24 +12,19 @@ const Grid = styled.ol`
 `
 
 export default function Books(props) {
-    const { books, syncData } = props
+    const { books, handleShelfChange } = props
     return(
         <div className="bookshelf-books">
             <Grid>
                 {/* Mapping through books */}
                 {Array.isArray(books) === true && (books.map((book, i) =>{
-                    const { author, title, imgURL, id } = book ;
                     return  (
                         <Book 
-                            title={title} 
-                            key={i} 
-                            id={id}
-                            author={author} 
-                            imgURL={imgURL} 
-                            syncData={syncData}
+                            data={book}
+                            key={book.id} 
+                            handleShelfChange={handleShelfChange}
                          />)}
                     ))}
-
             </Grid>
         </div>
     )
