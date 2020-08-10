@@ -31,7 +31,7 @@ export default function BookShelfChanger(props) {
         BookAPI.update(bookObj, shelf)
         
     }
-
+    const value = props.data.shelf || 'none'
     return(
         <Changer>
             <Icon 
@@ -39,7 +39,7 @@ export default function BookShelfChanger(props) {
                 padding='0'
                 size='40px'
             />
-            <Select value={props.data.shelf} onChange={(e) => handleChange(e, props.data)}>
+            <Select value={value} onChange={(e) => handleChange(e, props.data)}>
                 <option  value="move" disabled>Move to...</option>
                 <option  value="currentlyReading">Currently Reading</option>
                 <option  value="wantToRead">Want to Read</option>

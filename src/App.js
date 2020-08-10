@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect} from 'react'
 import {Route, Link} from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import styled from 'styled-components'
@@ -43,179 +43,140 @@ const App = styled.div`
 
 
 /*  The whole app */
-class BooksApp extends React.Component {
+function BooksApp(props)  {
 
-  state = {shelves: []}
+  const [books, setBooks] = useState([])
 
-  containsKeyValue = (array, key, value) => {
-    let ans = false;
-    array.forEach(obj => {
-      if(obj[key] === value) {ans = true}
-    })
-    return ans;
-  }
+  useEffect(() => {
+    (async function() {
+      console.log('useEffect is fired')
+      const data = await getPageDataFromServer()
+      setBooks(data);
+    })()
+  }, [])
+
 
 /**
  *    Filters the used data from API response.
  *    Handle cases when no image or author is provided. 
  *    @param {Object} bookObj - a book object coming from the API descibing a single book
  */ 
-  getDatafromObj = (bookObj) => {
-    return {
+
+
+  
+  // ================HELPER FUNCTIONS=================
+
+  const findBookByID= (id, booksArr = books) => {
+    const book = booksArr.filter( book => book.id === id)[0]
+    return book
+      ? book
+      : null
+
+  }
+
+  const getShelfOfBook = id => {
+    const book = findBookByID(id, books)
+    return book
+            ? book.shelf
+            : null
+  }
+
+  const getDatafromObj = (bookObj) => {
+    const shelf = bookObj.shelf || getShelfOfBook(bookObj.id)
+    let ansObj = {
       title: bookObj.title,
-      author: bookObj.authors ? bookObj.authors[0] : 'Unknown',
+      author: bookObj.authors ? bookObj.authors : 'Unknown',
       id: bookObj.id,
-      shelf: bookObj.shelf || 'none',
+      shelf: shelf,
       imgURL: bookObj.imageLinks 
               ? bookObj.imageLinks.thumbnail
               : 'https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg' 
     }
+    // TODO: lookup if it is in a shelf already on the main page
+    return ansObj
   }
 
-  
-  // ================HELPER FUNCTIONS=================
-  bookOnWhichShelf = (id) => {
-    const shelves = this.state.shelves;
-    let shelf = shelves.filter(shelf => 
-      Boolean(
-        shelf.books
-        .filter(book => book.id === id)[0])
-        )[0]
-    shelf && (shelf = shelf.name)
-    return shelf 
-          ? shelf
-          : 'none'
-  }
-  
-  
-  moveInUI = (book, shelf) => {
-    shelf === 'none' && (shelf = null)
-    const currentShelf = this.findCurrentShelf(book)  //the self in the state
-    currentShelf
-      ? this.moveBookTo(book, shelf, currentShelf)
-      : this.addBookToShelf(book, shelf)
-
+  const removeBook = (id) => {
+    console.log('removebook fired')
+    console.log('books: ', books)
+    const book = findBookByID(id, books) 
+    console.log('book: ', book)
+    const index = books.indexOf(book)
+    console.log('index: ', index)
+    const newBooks = [...books]
+    newBooks.splice(index, 1)
+    console.log('books: ', newBooks)
+    setBooks(newBooks)
   }
 
-  findCurrentShelf = (book) => {
-    const state = this.state
-    const currentShelf = state.shelves.filter(shelf => shelf.books.includes(book))[0]
-    return currentShelf 
-            ? currentShelf.name
-            : null
+  const addBook = (book) => {
+    const oldBook = findBookByID(book.id);
+    if (oldBook) {
+      const index = books.indexOf(oldBook);
+      const newBooks = [...books]
+      newBooks.splice(index, 1 )
+      setBooks([...newBooks, book ])
+    } else {
+      setBooks([...books, book])
+    }
   }
 
-  moveBookTo = (book, shelf, currentShelf) => {
-      this.removeBookFromShelf(book, currentShelf)
-      shelf !== null && this.addBookToShelf(book, shelf)
+  const moveInUI = (book, shelf) => {
+    !shelf && removeBook(book.id)
+    moveBookTo(book, shelf)
   }
 
-  removeBookFromShelf = (book, shelf) => {
-    let state = this.state
-    const shelfIndex = this.indexOfShelf(shelf)
-    const books = state.shelves[shelfIndex].books
-    const bookIndex = books.indexOf(book)
-    let newBooks = books
-    books.splice(bookIndex, 1)
-    state.shelves[shelfIndex].books = newBooks;
-    this.setState({state})
-  }
 
-  
-  addBookToShelf = (book, shelf) => {
-    
-    let state = this.state;
-    book.shelf = shelf;
-    const index = this.indexOfShelf(shelf)
-    state.shelves[index].books.push(book)
-    this.setState({state});
+  const moveBookTo = (book, shelf) => {
+      book.shelf = shelf
+      shelf !== null && addBook(book, shelf)
   }
-
-  indexOfShelf = (shelf) => {
-    const shelves = this.state.shelves;
-    const thisSelf = shelves.filter(currShelf => currShelf.name === shelf)[0];
-    const index = shelves.indexOf(thisSelf)
-    return index
-  }
-
 
 // ==========MAIN FUNCTIONS=====================================
 
-  handleShelfChange = async (book, shelf) => {
-    if (shelf === 'none') {
-
-    }
-    this.moveInUI(book, shelf)
+  const handleShelfChange = async (book, shelf) => {
+    if (shelf === 'none') {shelf = null}
+    moveInUI(book, shelf)
 
   }
-  
-
 
    //get shelves data from API at start
-  syncData = async () => {
-    let shelves = []
+  const getPageDataFromServer = async () => {
+    
 
     const allData = await BooksAPI.getAll()
-
-    allData.forEach(data => {
-
-        const filteredData = this.getDatafromObj(data)
-        const shelf = data.shelf
-        const isNewShelf = !this.containsKeyValue(shelves, 'name', shelf)
-
-        let index;
-        if( isNewShelf) { index = shelves.length}
-        else {shelves.forEach((currShelf, i) => {
-          if(currShelf.name === shelf) {index = i}
-        })} 
-        if (isNewShelf) {
-          shelves[index] = {
-            name: shelf,
-            books: [filteredData]
-          }
-        } else {
-          shelves[index].books.push(filteredData)
-        }
-    })
-    this.setState({shelves: shelves})
+    console.log(allData)
+    const filteredData = allData.map(bookObj => getDatafromObj(bookObj))
+    return filteredData
   }
   
-  
-  componentDidMount() {
-    this.syncData()    
-   } 
 
+  return (
+    <App>
+      <Header>MyReads</Header>
+        <Route exact path='/' render={() => (
+          <div>
+            <Sections 
+              handleShelfChange={handleShelfChange}
+              books={books}
+              getData={getDatafromObj}  
+            />
+              <Link to='./search'>
+                <Icon style={{marginBottom: '6rem'}} border padding="20px" iconName="plus" />
+              </Link> 
+          </div>
+        )} 
+        />
+        <Route exact path='/search' render={() => (
+          <SearchSection bookOnWhichShelf={getShelfOfBook} style={{justifySelf: 'center'}} handleShelfChange={handleShelfChange} getDataFromObj={getDatafromObj} />
+        )} 
+        />
+      <Footer>
+        <p>Site made by Aron Berenyi</p>
+      </Footer>
+    </App>    
 
-  render() {
-    return (
-      <App>
-        <Header>MyReads</Header>
-          <Route exact path='/' render={() => (
-            <div>
-              <Sections 
-                handleShelfChange={this.handleShelfChange}
-                clName="list-books" 
-                data={this.state}
-                getData={this.getDatafromObj}  
-              />
-                <Link to='./search'>
-                  <Icon style={{marginBottom: '6rem'}} border padding="20px" iconName="plus" />
-                </Link> 
-            </div>
-          )} 
-          />
-          <Route exact path='/search' render={() => (
-            <SearchSection bookOnWhichShelf={this.bookOnWhichShelf} style={{justifySelf: 'center'}} handleShelfChange={this.handleShelfChange} getDataFromObj={this.getDatafromObj} />
-          )} 
-          />
-        <Footer>
-          <p>Site made by Aron Berenyi</p>
-        </Footer>
-      </App>    
-
-
-    )
-  }
+  )
 }
 
 export default BooksApp
