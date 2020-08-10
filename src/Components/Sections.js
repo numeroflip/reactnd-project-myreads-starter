@@ -16,8 +16,8 @@ const SectionsWrapper = styled.article`
 export default function Sections(props) {
     const { books } = props;
     let shelves, booksOnShelves
+    shelves = ['currentlyReading','wantToRead','read']
     if (Array.isArray(books)) {
-        shelves = Array.from(new Set(books.map(book => book.shelf)))
         booksOnShelves = shelves.map(shelf => books.filter(book => book.shelf === shelf))
     }
     

@@ -93,9 +93,13 @@ function BooksApp()  {
   }
 
   const addBook = (providedBook) => {
+    const id = providedBook.id
     const isOnShelf = Boolean(findBookByID(providedBook.id));
     if (isOnShelf) {
-      const newBooks = [...books.filter(book => book.id !== providedBook.id), providedBook]
+      const newBooks = books.map(book => book.id === id ? Object.assign(providedBook) : book)
+      console.log(providedBook)
+      console.log(newBooks);
+      // [...books.filter(book => book.id !== providedBook.id), providedBook]
       setBooks(newBooks)
     } else {
       setBooks([...books, providedBook])
