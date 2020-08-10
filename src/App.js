@@ -82,7 +82,6 @@ class BooksApp extends React.Component {
         .filter(book => book.id === id)[0])
         )[0]
     shelf && (shelf = shelf.name)
-    console.log(shelf)
     return shelf 
           ? shelf
           : 'none'

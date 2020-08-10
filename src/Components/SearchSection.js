@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import FormInput from './FormInput'
 import Section from './Section'
 import styled from 'styled-components'
@@ -6,91 +6,78 @@ import { search } from '../BooksAPI'
 import { Link } from 'react-router-dom'
 import Icon from './Icon'
 
+const Form = styled.form`
+font-size: 2rem;
+width: 100%;
+margin: 0 auto;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+max-width: 600px;
 
-export default class SearchSection extends Component {
+> a {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 
-    state = {
-        query: '',
-        books: []
-    }
+@media(max-width: 600px) {
+    font-size: 1.7rem;
+}
 
-    syncStateAndInput = async (e) => {
-        this.setState({query: e.target.value})
-        return true;
-    }
+`
 
-    formatBooks = (books) => {
+export default function SearchSection(props) {
+
+    // ================ STATE =====================
+    const [query, setQuery] = useState('')
+    const [loadedBooks, setLoadedBooks] = useState([])
+
+    // =============================================
+    useEffect( () => {
+        const updateBooks = async() => {
+            const booksArr = await search(query)
+            const formattedBooks = formatBooks(booksArr)
+            const booksWithShelf = formattedBooks.map(book => {
+                book.shelf = props.bookOnWhichShelf(book.id)
+                return book
+            })
+            setLoadedBooks(booksWithShelf)
+        }
+        updateBooks()
+    },[query])
+
+
+    const formatBooks = (books) => {
         return  Array.isArray(books) 
-            ?   books.map(book => this.getDataFromObj(book))
+            ?   books.map(book => props.getDataFromObj(book))
             :   []
-        
     } 
-    
-    handleChange = async (e) => {
-        await this.syncStateAndInput(e)
-        let query = await search(this.state.query)
-        query = this.formatBooks(query)
-        
-        const newBooks = query.map(book => {
-            book.shelf = this.props.bookOnWhichShelf(book.id)
-            return book
-        } 
-        )
-        this.setState({books: newBooks});
-        
-        
-    }
-
-    getDataFromObj = this.props.getDataFromObj
 
 
-    Form = styled.form`
-        font-size: 2rem;
-        width: 100%;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        max-width: 600px;
-
-        > a {
-            display: flex;
-            align-items: center;
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
-
-        @media(max-width: 600px) {
-            font-size: 1.7rem;
-        }
-
-    `
-
-    render() {
-        const Form = this.Form;
-        return (
-            <div>
-                <Form>
-                    <Link to='/'>
-                        <Icon border size='30px' padding='15px' iconName='arrow-left2'></Icon>
-                    </Link>
-                    <FormInput 
-                        name="search"
-                        type="text" 
-                        value={this.state.query}
-                        placeholder="Search"
-                        onChange={(e) => this.handleChange(e)}
-                    />
-                </Form>
-                    <Section 
-                        handleShelfChange={this.props.handleShelfChange}
-                        getDataFromObj={this.getDataFromObj} 
-                        category="Results" 
-                        books={this.state.books}
-                    />
-            </div>
-        )
-    }
+    return (
+        <div>
+            <Form>
+                <Link to='/'>
+                    <Icon border size='30px' padding='15px' iconName='arrow-left2'></Icon>
+                </Link>
+                <FormInput 
+                    name="search"
+                    type="text" 
+                    value={query}
+                    placeholder="Search"
+                    onChange={(e) => setQuery(e.target.value)}
+                />
+            </Form>
+                <Section 
+                    handleShelfChange={props.handleShelfChange}
+                    getDataFromObj={props.getDataFromObj} 
+                    category="Results" 
+                    books={loadedBooks}
+                />
+        </div>
+    )
 }
