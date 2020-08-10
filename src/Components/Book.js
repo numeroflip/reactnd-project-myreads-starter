@@ -27,7 +27,7 @@ export default function Book(props) {
                     <BookShelfChanger handleShelfChange={props.handleShelfChange} data={data} />
                 </BookTop>
                 <BookTitle>{data.title}</BookTitle>
-                <BookAuthor>- {data.author}</BookAuthor>
+                {data.author.map((author, i) => (<BookAuthor key={i}>{author}</BookAuthor>))}
             </BookItem>
     )
 }

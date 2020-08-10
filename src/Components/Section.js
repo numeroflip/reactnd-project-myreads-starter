@@ -2,13 +2,32 @@ import React from 'react'
 import Title from './Title'
 import Books from './Books'
 import styled from 'styled-components'
+import {Link} from 'react-router-dom'
+import Icon from './Icon'
 
 const Bookshelf = styled.div`
-padding: 0 10px 20px;
+    padding: 0 10px 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-@media (min-width: 600px) {
-    padding: 0 20px 40px;
-}
+
+    @media (min-width: 600px) {
+        padding: 0 20px 40px;
+    }
+`
+
+const TitleWrapper = styled.div`
+    align-self: stretch;
+    display: block;
+    position: relative;
+
+    a {
+        position: absolute;
+        top: 4rem;
+        right: 2rem;
+    }
 `
 
 
@@ -45,7 +64,15 @@ export default function Section(props) {
     return (
 
         <Bookshelf>
-            <Title>{camelToNormal(category)}</Title>
+            <TitleWrapper>
+                <Title>
+                    {camelToNormal(category)}
+                </Title> 
+                {props.addIcon && ( 
+                    <Link to='./search'>
+                        <Icon border padding="20px" iconName="plus" />
+                    </Link> )}
+            </TitleWrapper>
             <Books handleShelfChange={props.handleShelfChange} books={books} />
         </Bookshelf>
     )

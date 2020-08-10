@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import {Route, Link} from 'react-router-dom'
+import {Route} from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import styled from 'styled-components'
 import bgImg from './img/blizzard.png'
@@ -9,7 +9,6 @@ import Header from './Components/Header'
 import Sections from './Components/Sections'
 import Footer from './Components/Footer'
 import SearchSection from './Components/SearchSection'
-import Icon from './Components/Icon'
 
 
 // =========== CSS STYLES ================
@@ -49,18 +48,10 @@ function BooksApp(props)  {
 
   useEffect(() => {
     (async function() {
-      console.log('useEffect is fired')
       const data = await getPageDataFromServer()
       setBooks(data);
     })()
   }, [])
-
-
-/**
- *    Filters the used data from API response.
- *    Handle cases when no image or author is provided. 
- *    @param {Object} bookObj - a book object coming from the API descibing a single book
- */ 
 
 
   
@@ -97,15 +88,10 @@ function BooksApp(props)  {
   }
 
   const removeBook = (id) => {
-    console.log('removebook fired')
-    console.log('books: ', books)
     const book = findBookByID(id, books) 
-    console.log('book: ', book)
     const index = books.indexOf(book)
-    console.log('index: ', index)
     const newBooks = [...books]
     newBooks.splice(index, 1)
-    console.log('books: ', newBooks)
     setBooks(newBooks)
   }
 
@@ -145,7 +131,6 @@ function BooksApp(props)  {
     
 
     const allData = await BooksAPI.getAll()
-    console.log(allData)
     const filteredData = allData.map(bookObj => getDatafromObj(bookObj))
     return filteredData
   }
@@ -157,13 +142,13 @@ function BooksApp(props)  {
         <Route exact path='/' render={() => (
           <div>
             <Sections 
+              addIcon
               handleShelfChange={handleShelfChange}
               books={books}
               getData={getDatafromObj}  
-            />
-              <Link to='./search'>
-                <Icon style={{marginBottom: '6rem'}} border padding="20px" iconName="plus" />
-              </Link> 
+            >
+            </Sections>
+
           </div>
         )} 
         />

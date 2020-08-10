@@ -11,7 +11,6 @@ const Title = styled.h2`
     color: white;
     border-radius: 80px;
     margin-left: -4rem;
-    /* text-align: center; */
     margin-top: 4rem;
     margin-bottom: 4rem;
     position: relative;
