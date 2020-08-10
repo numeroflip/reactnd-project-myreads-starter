@@ -37,8 +37,9 @@ export default function SearchSection(props) {
     const [loadedBooks, setLoadedBooks] = useState([])
 
     // =============================================
+    // When query changes, fetch and render books
     useEffect( () => {
-        const updateBooks = async() => {
+        (async function () {
             const booksArr = await search(query)
             const formattedBooks = formatBooks(booksArr)
             const booksWithShelf = formattedBooks.map(book => {
@@ -46,17 +47,14 @@ export default function SearchSection(props) {
                 return book
             })
             setLoadedBooks(booksWithShelf)
-        }
-        updateBooks()
+        })()
     },[query])
-
 
     const formatBooks = (books) => {
         return  Array.isArray(books) 
             ?   books.map(book => props.getDataFromObj(book))
             :   []
     } 
-
 
     return (
         <div>

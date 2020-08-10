@@ -31,7 +31,9 @@ export default function BookShelfChanger(props) {
         BookAPI.update(bookObj, shelf)
         
     }
+
     const value = props.data.shelf || 'none'
+    
     return(
         <Changer>
             <Icon 

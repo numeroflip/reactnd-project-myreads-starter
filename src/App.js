@@ -42,7 +42,7 @@ const App = styled.div`
 
 
 /*  The whole app */
-function BooksApp(props)  {
+function BooksApp()  {
 
   const [books, setBooks] = useState([])
 
@@ -65,60 +65,54 @@ function BooksApp(props)  {
 
   }
 
+
   const getShelfOfBook = id => {
     const book = findBookByID(id, books)
     return book
             ? book.shelf
             : null
   }
+  // Filters data provided from API request, and formats it
+  const getDatafromObj = bookObj => {
 
-  const getDatafromObj = (bookObj) => {
-    const shelf = bookObj.shelf || getShelfOfBook(bookObj.id)
     let ansObj = {
       title: bookObj.title,
-      author: bookObj.authors ? bookObj.authors : 'Unknown',
+      author: bookObj.authors ? bookObj.authors : ['Unknown'],
       id: bookObj.id,
-      shelf: shelf,
+      shelf: bookObj.shelf || getShelfOfBook(bookObj.id),
       imgURL: bookObj.imageLinks 
               ? bookObj.imageLinks.thumbnail
               : 'https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg' 
     }
-    // TODO: lookup if it is in a shelf already on the main page
     return ansObj
   }
 
-  const removeBook = (id) => {
-    const book = findBookByID(id, books) 
-    const index = books.indexOf(book)
-    const newBooks = [...books]
-    newBooks.splice(index, 1)
-    setBooks(newBooks)
+  const removeBook = id => {
+    const updatedBooks = books.filter(book => book.id !== id)
+    setBooks(updatedBooks)
   }
 
-  const addBook = (book) => {
-    const oldBook = findBookByID(book.id);
-    if (oldBook) {
-      const index = books.indexOf(oldBook);
-      const newBooks = [...books]
-      newBooks.splice(index, 1 )
-      setBooks([...newBooks, book ])
+  const addBook = (providedBook) => {
+    const isOnShelf = Boolean(findBookByID(providedBook.id));
+    if (isOnShelf) {
+      const newBooks = [...books.filter(book => book.id !== providedBook.id), providedBook]
+      setBooks(newBooks)
     } else {
-      setBooks([...books, book])
+      setBooks([...books, providedBook])
     }
   }
-
+  
+  const moveBookTo = (book, shelf) => {
+    book.shelf = shelf
+    shelf !== null && addBook(book, shelf)
+  }
+  
   const moveInUI = (book, shelf) => {
     !shelf && removeBook(book.id)
     moveBookTo(book, shelf)
   }
 
-
-  const moveBookTo = (book, shelf) => {
-      book.shelf = shelf
-      shelf !== null && addBook(book, shelf)
-  }
-
-// ==========MAIN FUNCTIONS=====================================
+  // ==========MAIN FUNCTIONS=====================================
 
   const handleShelfChange = async (book, shelf) => {
     if (shelf === 'none') {shelf = null}

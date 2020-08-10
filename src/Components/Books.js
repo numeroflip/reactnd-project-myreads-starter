@@ -16,8 +16,7 @@ export default function Books(props) {
     return(
         <div className="bookshelf-books">
             <Grid>
-                {/* Mapping through books */}
-                {Array.isArray(books) === true && (books.map((book) =>{
+                {Array.isArray(books) && (books.map((book) =>{
                     return  (
                         <Book 
                             data={book}
