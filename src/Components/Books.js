@@ -11,20 +11,21 @@ const Grid = styled.ol`
     flex-wrap: wrap;
 `
 
-export default function Books(props) {
-    const { books, handleShelfChange } = props
+
+
+export default function Books({ books, handleShelfChange }) {
+
     return(
-        <div className="bookshelf-books">
-            <Grid>
-                {Array.isArray(books) && (books.map((book) =>{
-                    return  (
-                        <Book 
-                            data={book}
-                            key={book.id} 
-                            handleShelfChange={handleShelfChange}
-                         />)}
-                    ))}
-            </Grid>
-        </div>
+        <Grid>
+            {Array.isArray(books) && (books.map((book, index) => (
+                <Book 
+                    data={book}
+                    handleShelfChange={handleShelfChange}
+                    key={index}
+                    />
+                    ))
+                )}
+                    
+        </Grid>
     )
 }

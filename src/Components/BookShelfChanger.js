@@ -21,18 +21,20 @@ import * as BookAPI from '../BooksAPI'
     `
 
 
-export default function BookShelfChanger(props) {
+export default function BookShelfChanger({ data, handleShelfChange, setInProp }) {
 
     const handleChange = async (e, book) => {
+
+        setInProp(false)
         const shelf = e.target.value;
-        props.handleShelfChange(book, shelf)
+        handleShelfChange(book, shelf)
 
         const bookObj = await BookAPI.get(book.id)
         BookAPI.update(bookObj, shelf)
         
     }
 
-    const value = props.data.shelf || 'none'
+    const value = data.shelf || 'none'
     
     return(
         <Changer>
@@ -41,7 +43,7 @@ export default function BookShelfChanger(props) {
                 padding='0'
                 size='40px'
             />
-            <Select value={value} onChange={(e) => handleChange(e, props.data)}>
+            <Select value={value} onChange={(e) => handleChange(e, data)}>
                 <option  value="move" disabled>Move to...</option>
                 <option  value="currentlyReading">Currently Reading</option>
                 <option  value="wantToRead">Want to Read</option>

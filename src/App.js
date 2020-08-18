@@ -104,8 +104,10 @@ function BooksApp()  {
   }
   
   const moveBookTo = (book, shelf) => {
-    book.shelf = shelf
-    shelf !== null && addBook(book, shelf)
+    setTimeout( () => {
+      book.shelf = shelf
+      shelf !== null && addBook(book, shelf)
+    }, 100)
   }
   
   const moveInUI = (book, shelf) => {
@@ -118,13 +120,11 @@ function BooksApp()  {
   const handleShelfChange = async (book, shelf) => {
     if (shelf === 'none') {shelf = null}
     moveInUI(book, shelf)
-
   }
 
    //get shelves data from API at start
   const getPageDataFromServer = async () => {
     
-
     const allData = await BooksAPI.getAll()
     const filteredData = allData.map(bookObj => getDatafromObj(bookObj))
     return filteredData
