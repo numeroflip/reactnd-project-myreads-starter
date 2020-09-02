@@ -8,7 +8,7 @@ A book organizer app. Add, delete, and organize books into three categories.
     <img src='./review.gif' align=center></img>
 </p>
 <p align=center>
-    <a href='https://sleepy-citadel-44307.herokuapp.com/'>Live Demo</a>
+    <a href='https://numeroflip-myreads.herokuapp.com/'>Live Demo</a>
 </p>
 
 
